@@ -13,6 +13,16 @@ class Node{
         this->prev = NULL;
         this->next = NULL;
     }
+
+    ~Node(){
+        int value = this->data;
+        if(next != NULL){
+            delete next;
+            next = NULL;
+        }
+        cout<<"Memory free for the value: "<<value<<endl;
+
+    }
 };
 //traversing the linked list
 void print(Node* head){
@@ -37,23 +47,40 @@ int getLength(Node* head){
 }
 
 
-void insertAtHead(Node* &head, int data){
-    Node* temp = new Node(data);
-    temp->next = head;
-    head->prev = temp;
-    head = temp;
+void insertAtHead(Node* &tail, Node* &head, int data){
+    if(head == NULL){
+        Node* temp = new Node(data);
+        head = temp;
+        tail = temp;
+
+    }
+    else{
+        Node* temp = new Node(data);
+        temp->next = head;
+        head->prev = temp;
+        head = temp;
+    }
+    
 }
 //inserting at tail
-void insertAtTail(Node* &tail, int data){
-    Node* temp = new Node(data);
-    tail->next = temp;
-    temp->prev = tail;
-    tail = temp;
+void insertAtTail(Node* &tail,Node* &head, int data){
+    if(tail == NULL){
+        Node* temp = new Node(data);
+        tail = temp;
+        head = temp;
+    }
+    else{
+        Node* temp = new Node(data);
+        tail->next = temp;
+        temp->prev = tail;
+        tail = temp;
+    }
+    
 }
 
-void insertAtPosition(Node* &head, Node* &tail,int position, int data){
+void insertAtPosition( Node* &tail,Node* &head,int position, int data){
     if(position == 1){
-        insertAtHead(head, data);
+        insertAtHead(tail,head, data);
         return;
     } 
 
@@ -66,7 +93,7 @@ void insertAtPosition(Node* &head, Node* &tail,int position, int data){
     }
 
     if(temp->next == NULL){
-        insertAtTail(tail, data);
+        insertAtTail(tail,head, data);
         return;
     }
 
@@ -80,19 +107,50 @@ void insertAtPosition(Node* &head, Node* &tail,int position, int data){
 
 
 }
+void deleteNode(Node* &head, int position){
+    if(position == 1){
+        Node* temp = head;
+        temp->next->prev = NULL;
+        head = head->next;
+        temp->next = NULL;
+        delete temp;
+
+
+    }
+    else{
+        Node* curr = head;
+        Node* prev = NULL;
+
+        int cnt=1;
+        while(cnt<position){
+            prev = curr;
+            curr = curr->next;
+            cnt++;
+        }
+        curr->prev = NULL;
+        prev->next = curr->next;
+        curr->next = NULL;
+        delete curr;
+    }
+}
 
 int main(){
-    Node* node1 = new Node(10);
-    Node* head = node1;
-    Node* tail = node1;
-    print(head);
+    
+    Node* head = NULL;
+    Node* tail = NULL;
+    
     cout<<getLength(head)<<endl;
     // insertAtHead(head, 11);
     // print(head);
 
-    insertAtTail(tail,12);
+    insertAtTail(tail,head,12);
     print(head);
-    insertAtPosition(head, tail, 3, 100);
+    insertAtPosition(tail,head, 2, 100);
+    print(head);
+    insertAtPosition(tail,head,3, 56);
+    print(head);
+
+    deleteNode(head,1);
     print(head);
 
 }
